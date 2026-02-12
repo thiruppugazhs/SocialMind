@@ -1,5 +1,7 @@
 {
   "name": "SocialMind AI - Instagram Pro",
   "description": "A high-performance AI Social Media Manager for Instagram, featuring content generation, automated engagement, growth analytics, and trend hunting powered by Gemini.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

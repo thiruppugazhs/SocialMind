@@ -18,10 +18,14 @@ import {
   Loader2,
   Sparkles,
   ArrowLeft,
-  ChevronRight
+  ChevronRight,
+  UserPlus,
+  ExternalLink,
+  FileText
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { generateFullAudit, IGAuditResponse } from '../services/geminiService';
+import { View } from '../types';
 
 const mockData = [
   { name: 'Mon', followers: 4000, reach: 2400, impressions: 3100, engagement: 4.1, saved: 2 },
@@ -34,16 +38,29 @@ const mockData = [
 ];
 
 const mockFollowers = [
-  { name: 'priya_m', handle: '@priya_m', followers: '12K', joined: '2d ago', avatar: 'https://picsum.photos/seed/p/100/100' },
-  { name: 'rahul_vibe', handle: '@rahul_vibe', followers: '45K', joined: '5d ago', avatar: 'https://picsum.photos/seed/r/100/100' },
-  { name: 'nike_india', handle: '@nike_india', followers: '1.2M', joined: '1w ago', avatar: 'https://picsum.photos/seed/n/100/100' },
-  { name: 'tech_guru', handle: '@tech_guru', followers: '280K', joined: '1w ago', avatar: 'https://picsum.photos/seed/t/100/100' },
+  { name: 'Priya Sharma', handle: 'priya_m', followers: '12K', joined: '2d ago', avatar: 'https://picsum.photos/seed/p/100/100' },
+  { name: 'Rahul Vibe', handle: 'rahul_vibe', followers: '45K', joined: '5d ago', avatar: 'https://picsum.photos/seed/r/100/100' },
+  { name: 'Nike India', handle: 'nike_india', followers: '1.2M', joined: '1w ago', avatar: 'https://picsum.photos/seed/n/100/100' },
+  { name: 'Tech Guru', handle: 'tech_guru', followers: '280K', joined: '1w ago', avatar: 'https://picsum.photos/seed/t/100/100' },
+  { name: 'Aman Deep', handle: 'aman_clicks', followers: '8.4K', joined: '3w ago', avatar: 'https://picsum.photos/seed/a/100/100' },
+  { name: 'Sarah Jenkins', handle: 's_jenkins_art', followers: '22K', joined: '1mo ago', avatar: 'https://picsum.photos/seed/s/100/100' },
+  { name: 'David Miller', handle: 'miller_fit', followers: '105K', joined: '2mo ago', avatar: 'https://picsum.photos/seed/d/100/100' },
+  { name: 'Elena Rossi', handle: 'rossi_travels', followers: '67K', joined: '3mo ago', avatar: 'https://picsum.photos/seed/e/100/100' },
+  { name: 'Kevin Durant', handle: 'kd_official', followers: '12M', joined: '1y ago', avatar: 'https://picsum.photos/seed/k/100/100' },
+  { name: 'Zoya Khan', handle: 'zoyakhan_vlogs', followers: '4.2K', joined: '4w ago', avatar: 'https://picsum.photos/seed/z/100/100' },
 ];
 
 const mockLikedPosts = [
-  { id: 1, type: 'post', caption: 'Summer glow is real! ✨', date: 'Oct 24', likes: 1200, thumb: 'https://picsum.photos/seed/s1/100/100' },
-  { id: 2, type: 'reel', caption: 'How to use AI for growth 🚀', date: 'Oct 23', likes: 4500, thumb: 'https://picsum.photos/seed/s2/100/100' },
-  { id: 3, type: 'post', caption: 'Morning rituals 🌿', date: 'Oct 22', likes: 800, thumb: 'https://picsum.photos/seed/s3/100/100' },
+  { id: 1, type: 'post', caption: 'Summer glow is real! ✨ #skincare #lifestyle', date: 'Oct 24', likes: 1200, thumb: 'https://picsum.photos/seed/s1/100/100' },
+  { id: 2, type: 'reel', caption: 'How to use AI for growth 🚀 #socialmedia #tips', date: 'Oct 23', likes: 4500, thumb: 'https://picsum.photos/seed/s2/100/100' },
+  { id: 3, type: 'post', caption: 'Morning rituals 🌿 #peaceful #mindset', date: 'Oct 22', likes: 800, thumb: 'https://picsum.photos/seed/s3/100/100' },
+];
+
+const mockLikingUsers = [
+  { name: 'Emily Watts', handle: 'em_watts', avatar: 'https://picsum.photos/seed/e/100/100' },
+  { name: 'John Doe', handle: 'john_doe_99', avatar: 'https://picsum.photos/seed/j/100/100' },
+  { name: 'Style Central', handle: 'style_central', avatar: 'https://picsum.photos/seed/st/100/100' },
+  { name: 'Marco Polo', handle: 'marco_adventures', avatar: 'https://picsum.photos/seed/mp/100/100' },
 ];
 
 const StatCard = ({ label, value, trend, icon: Icon, color, onClick }: any) => (
@@ -64,20 +81,39 @@ const StatCard = ({ label, value, trend, icon: Icon, color, onClick }: any) => (
   </button>
 );
 
-const IGDashboard: React.FC = () => {
+interface Props {
+  onNavigate?: (view: View) => void;
+}
+
+const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
   const [isAuditLoading, setIsAuditLoading] = useState(false);
   const [auditResult, setAuditResult] = useState<IGAuditResponse | null>(null);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
+  const [selectedPostForLikes, setSelectedPostForLikes] = useState<any | null>(null);
+  const [isFollowersExpanded, setIsFollowersExpanded] = useState(false);
 
   const handleGenerateAudit = async () => {
     setIsAuditLoading(true);
-    const result = await generateFullAudit({ followers: '12.4K', reach: '84K', impressions: '128K' });
+    const result = await generateFullAudit({ 
+      followers: '6,124', 
+      reach: '45.2K', 
+      impressions: '128K',
+      likes: '8.4K',
+      engagement: '4.8%' 
+    });
     if (result) {
       setAuditResult(result);
       setShowAuditModal(true);
     }
     setIsAuditLoading(false);
+  };
+
+  const handleExportPdf = () => {
+    alert("Generating PDF Audit Report... Please wait.");
+    setTimeout(() => {
+      alert("SocialMind Audit Report (Oct 2024) downloaded successfully! 📄✨");
+    }, 1500);
   };
 
   const DetailPanel = ({ title, onClose, children }: any) => (
@@ -93,60 +129,117 @@ const IGDashboard: React.FC = () => {
     </div>
   );
 
-  if (selectedStat) {
+  if (selectedStat === 'Total Followers') {
+    const displayedFollowers = isFollowersExpanded ? mockFollowers : mockFollowers.slice(0, 5);
+    
     return (
-      <DetailPanel title={selectedStat} onClose={() => setSelectedStat(null)}>
-        {selectedStat === 'Total Followers' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {mockFollowers.map((f, i) => (
-                <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                  <div className="flex items-center gap-4">
-                    <img src={f.avatar} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" alt={f.name} />
-                    <div><p className="font-bold text-slate-800">{f.name}</p><p className="text-xs text-slate-400 font-medium">{f.handle}</p></div>
+      <DetailPanel title="Total Followers (6,124)" onClose={() => { setSelectedStat(null); setIsFollowersExpanded(false); }}>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {displayedFollowers.map((f, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                <div className="flex items-center gap-4">
+                  <img src={f.avatar} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" alt={f.name} />
+                  <div>
+                    <p className="font-bold text-slate-800">{f.name}</p>
+                    <a 
+                      href={`https://instagram.com/${f.handle}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-xs text-pink-600 font-bold hover:underline flex items-center gap-1"
+                    >
+                      @{f.handle} <ExternalLink size={10} />
+                    </a>
                   </div>
-                  <div className="text-right"><p className="text-xs font-black text-pink-600">{f.followers}</p><p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">{f.joined}</p></div>
                 </div>
-              ))}
-            </div>
-            <button className="w-full py-4 text-slate-400 font-bold text-sm border-2 border-dashed border-slate-200 rounded-2xl hover:text-slate-600 hover:border-slate-300">View All 12,482 Followers</button>
+                <div className="text-right">
+                  <p className="text-xs font-black text-slate-500">{f.followers} followers</p>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Joined {f.joined}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-        {selectedStat === 'Total Likes' && (
+          <button 
+            onClick={() => setIsFollowersExpanded(!isFollowersExpanded)}
+            className="w-full py-4 text-slate-400 font-bold text-sm border-2 border-dashed border-slate-200 rounded-2xl hover:text-slate-600 hover:border-slate-300 transition-all"
+          >
+            {isFollowersExpanded ? "Show Less" : "View All 6,124 Followers"}
+          </button>
+        </div>
+      </DetailPanel>
+    );
+  }
+
+  if (selectedStat === 'Total Likes') {
+    return (
+      <DetailPanel 
+        title={selectedPostForLikes ? "Post Engagement" : "Recent Content Performance"} 
+        onClose={() => selectedPostForLikes ? setSelectedPostForLikes(null) : setSelectedStat(null)}
+      >
+        {selectedPostForLikes ? (
+          <div className="space-y-6 animate-in zoom-in duration-300">
+             <div className="flex items-start gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                <img src={selectedPostForLikes.thumb} className="w-24 h-24 rounded-2xl object-cover shadow-lg" alt="Post" />
+                <div>
+                  <h4 className="text-lg font-black text-slate-800 mb-1">{selectedPostForLikes.caption}</h4>
+                  <div className="flex gap-4 text-sm font-bold text-slate-500">
+                    <span className="flex items-center gap-1 text-red-500"><Heart size={16} fill="currentColor"/> {selectedPostForLikes.likes} Likes</span>
+                    <span>{selectedPostForLikes.date}</span>
+                  </div>
+                </div>
+             </div>
+             <div className="space-y-3">
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Recent Likes from Followers</h5>
+                {mockLikingUsers.map((u, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:shadow-sm transition-all">
+                    <div className="flex items-center gap-3">
+                      <img src={u.avatar} className="w-10 h-10 rounded-full" alt={u.name} />
+                      <div>
+                        <p className="text-sm font-bold text-slate-800">{u.name}</p>
+                        <a 
+                          href={`https://instagram.com/${u.handle}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-xs text-slate-400 hover:text-pink-600 transition-colors"
+                        >
+                          @{u.handle}
+                        </a>
+                      </div>
+                    </div>
+                    <button className="px-4 py-2 bg-pink-50 text-pink-600 rounded-xl text-xs font-black">Profile</button>
+                  </div>
+                ))}
+             </div>
+          </div>
+        ) : (
           <div className="space-y-6">
-            <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Recent Liked Content</h4>
-            <div className="divide-y divide-slate-100">
+            <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Total Likes for each Post/Reel</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mockLikedPosts.map((p) => (
-                <div key={p.id} className="py-4 flex items-center justify-between group cursor-pointer hover:bg-slate-50 px-2 rounded-xl transition-colors">
-                  <div className="flex items-center gap-4">
-                    <img src={p.thumb} className="w-12 h-12 rounded-xl object-cover shadow-sm" alt="Post" />
-                    <div><p className="font-bold text-slate-800 line-clamp-1">{p.caption}</p><p className="text-xs text-slate-400 font-medium">{p.date}</p></div>
+                <button 
+                  key={p.id} 
+                  onClick={() => setSelectedPostForLikes(p)}
+                  className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden group hover:shadow-xl transition-all text-left"
+                >
+                  <div className="aspect-square relative overflow-hidden bg-slate-100">
+                    <img src={p.thumb} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Post" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="text-white font-black flex items-center gap-2"><Heart fill="white" size={24}/> {p.likes}</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2"><Heart size={14} className="text-red-500 fill-red-500" /><span className="text-sm font-black text-slate-700">{p.likes}</span><ChevronRight size={16} className="text-slate-300" /></div>
-                </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px] font-black uppercase tracking-wider">{p.type}</span>
+                      <span className="text-[10px] text-slate-400 font-bold">{p.date}</span>
+                    </div>
+                    <p className="font-bold text-slate-800 line-clamp-2 leading-tight">{p.caption}</p>
+                    <div className="mt-4 flex items-center justify-between">
+                       <span className="text-sm font-black text-pink-600">{p.likes} Likes</span>
+                       <ChevronRight size={16} className="text-slate-300 group-hover:text-pink-600" />
+                    </div>
+                  </div>
+                </button>
               ))}
-            </div>
-          </div>
-        )}
-        {['Total Impressions', 'Weekly Reach', 'Avg. Engagement', 'AI Saved Hours'].includes(selectedStat) && (
-          <div className="space-y-8">
-            <div className="h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={mockData}>
-                  <defs>
-                    <linearGradient id="colorMain" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ec4899" stopOpacity={0.2}/><stop offset="95%" stopColor="#ec4899" stopOpacity={0}/></linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
-                  <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
-                  <Area type="monotone" dataKey={selectedStat === 'Total Impressions' ? 'impressions' : selectedStat === 'Weekly Reach' ? 'reach' : selectedStat === 'Avg. Engagement' ? 'engagement' : 'saved'} stroke="#ec4899" fill="url(#colorMain)" strokeWidth={4} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="p-6 bg-slate-900 rounded-[2rem] text-white">
-              <div className="flex items-center gap-3 mb-4"><Sparkles className="text-pink-400" size={20}/><h4 className="text-sm font-black uppercase tracking-widest">AI Trend Forecast</h4></div>
-              <p className="text-slate-300 text-sm leading-relaxed">Based on current trajectory, your <span className="text-white font-bold">{selectedStat}</span> is expected to grow by <span className="text-emerald-400 font-black">22%</span> in the next 14 days if you maintain the current posting frequency.</p>
             </div>
           </div>
         )}
@@ -157,8 +250,8 @@ const IGDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-6">
-        <StatCard onClick={() => setSelectedStat('Total Followers')} label="Total Followers" value="12,482" trend="+12%" icon={Users} color="pink" />
-        <StatCard onClick={() => setSelectedStat('Total Likes')} label="Total Likes" value="45.2K" trend="+15%" icon={Heart} color="red" />
+        <StatCard onClick={() => setSelectedStat('Total Followers')} label="Total Followers" value="6,124" trend="+12%" icon={Users} color="pink" />
+        <StatCard onClick={() => setSelectedStat('Total Likes')} label="Total Likes" value="8.4K" trend="+15%" icon={Heart} color="red" />
         <StatCard onClick={() => setSelectedStat('Total Impressions')} label="Total Impressions" value="128K" trend="+28%" icon={Zap} color="blue" />
         <StatCard onClick={() => setSelectedStat('Weekly Reach')} label="Weekly Reach" value="84.2K" trend="+42%" icon={Eye} color="indigo" />
         <StatCard onClick={() => setSelectedStat('Avg. Engagement')} label="Avg. Engagement" value="4.8%" trend="+0.5%" icon={TrendingUp} color="orange" />
@@ -205,8 +298,18 @@ const IGDashboard: React.FC = () => {
               </div>
             </div>
             <div className="p-6 bg-white border-t border-slate-100 flex gap-4">
-              <button onClick={() => { alert("Generating PDF Report... please wait."); setTimeout(() => alert("Report downloaded successfully!"), 2000); }} className="flex-1 py-4 bg-slate-50 text-slate-800 rounded-2xl font-bold flex items-center justify-center gap-2 border border-slate-200"><Download size={18} /> Export PDF Report</button>
-              <button onClick={() => { alert("Action plan implemented! Check your automation center."); setShowAuditModal(false); }} className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 shadow-xl transition-all">Implement Action Plan</button>
+              <button 
+                onClick={handleExportPdf} 
+                className="flex-1 py-4 bg-slate-50 text-slate-800 rounded-2xl font-bold flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-100 transition-all"
+              >
+                <FileText size={18} /> Export PDF Report
+              </button>
+              <button 
+                onClick={() => { onNavigate?.('ig-automation'); setShowAuditModal(false); }} 
+                className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 shadow-xl transition-all"
+              >
+                Implement Action Plan
+              </button>
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
-
 export type Platform = 'instagram' | 'x' | 'facebook' | 'linkedin';
-export type ContactCategory = 'business' | 'friends' | 'general';
+export type ContactCategory = 'business' | 'friends';
 export type AutomationActionType = 'like' | 'comment' | 'dm' | 'block';
 
 export interface IGContentResponse {

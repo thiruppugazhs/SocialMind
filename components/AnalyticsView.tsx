@@ -10,7 +10,9 @@ import {
   ResponsiveContainer, 
   Cell, 
   PieChart, 
-  Pie
+  Pie,
+  LineChart,
+  Line
 } from 'recharts';
 import { 
   Target, 
@@ -24,7 +26,14 @@ import {
   Sparkles,
   Info,
   Loader2,
-  Download
+  Download,
+  ArrowLeft,
+  Search,
+  Zap,
+  CheckCircle2,
+  AlertTriangle,
+  ChevronRight,
+  Trophy
 } from 'lucide-react';
 
 const sentimentData = [
@@ -73,10 +82,18 @@ const cityData = [
   { name: 'Hyderabad', value: 10 },
 ];
 
+const competitorData = [
+  { name: 'You', engagement: 4.8, growth: 12, frequency: 5 },
+  { name: 'Niche Avg', engagement: 3.2, growth: 8, frequency: 3 },
+  { name: 'Top Leader', engagement: 6.5, growth: 25, frequency: 12 },
+];
+
 const AnalyticsView: React.FC = () => {
   const [locationTab, setLocationTab] = useState<'country' | 'state' | 'city'>('country');
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isComparing, setIsComparing] = useState(false);
+  const [showCompetitorPanel, setShowCompetitorPanel] = useState(false);
+  const [competitorSearch, setCompetitorSearch] = useState('');
 
   const getLocationData = () => {
     switch (locationTab) {
@@ -99,9 +116,128 @@ const AnalyticsView: React.FC = () => {
     setIsComparing(true);
     setTimeout(() => {
       setIsComparing(false);
-      alert("Competitor analysis complete: Your account is in the top 5% of your niche! Keep it up. 🏆");
+      setShowCompetitorPanel(true);
     }, 2000);
   };
+
+  const CompetitorPanel = () => (
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-10 duration-500">
+      <div className="flex items-center justify-between bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => setShowCompetitorPanel(false)}
+            className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <div>
+            <h3 className="text-xl font-black text-slate-800">Competitor Benchmarks</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Global Niche: Skincare & Lifestyle</p>
+          </div>
+        </div>
+        <div className="relative w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Analyze @competitor..." 
+            value={competitorSearch}
+            onChange={(e) => setCompetitorSearch(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 font-bold text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+           <h4 className="text-lg font-black text-slate-800 mb-8 flex items-center gap-2">
+             <TrendingUp className="text-pink-600" size={20} /> 
+             Engagement Rate vs. Competitors
+           </h4>
+           <div className="h-80">
+             <ResponsiveContainer width="100%" height="100%">
+               <BarChart data={competitorData}>
+                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12, fontWeight: 700}} />
+                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11}} unit="%" />
+                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '16px', border: 'none'}} />
+                 <Bar dataKey="engagement" radius={[10, 10, 0, 0]} barSize={60}>
+                    {competitorData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.name === 'You' ? '#ec4899' : '#818cf8'} />
+                    ))}
+                 </Bar>
+               </BarChart>
+             </ResponsiveContainer>
+           </div>
+        </div>
+
+        <div className="lg:col-span-4 space-y-6">
+           <div className="bg-gradient-to-br from-indigo-900 to-indigo-800 p-8 rounded-[2rem] text-white shadow-xl relative overflow-hidden">
+              <Trophy className="absolute top-4 right-4 text-pink-400 opacity-20" size={100} />
+              <div className="relative z-10">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-pink-300 mb-2">Performance Rank</p>
+                <h3 className="text-4xl font-black mb-1">Top 5%</h3>
+                <p className="text-xs font-medium text-indigo-100 leading-relaxed">
+                  You are outperforming 95% of creators in the Skincare niche this week.
+                </p>
+              </div>
+           </div>
+
+           <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm space-y-4">
+              <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Winning Tactics</h5>
+              <div className="space-y-3">
+                 {[
+                   { t: "Story Polls", s: "Leader uses 3+ daily", v: "High" },
+                   { t: "Reel Covers", s: "Consistent branding", v: "Med" },
+                   { t: "SEO Keywords", s: "Optimized Bio/Captions", v: "Critical" }
+                 ].map((item, i) => (
+                   <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                     <span className="text-sm font-bold text-slate-700">{item.t}</span>
+                     <span className="text-[10px] font-black text-pink-600 bg-pink-50 px-2 py-0.5 rounded-full">{item.v}</span>
+                   </div>
+                 ))}
+              </div>
+           </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+        <h4 className="text-lg font-black text-slate-800 mb-8">AI Gap Analysis</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100">
+              <div className="flex items-center gap-3 mb-4 text-emerald-600">
+                <CheckCircle2 size={24} />
+                <span className="font-black text-xs uppercase tracking-widest">Strength</span>
+              </div>
+              <p className="text-sm text-emerald-900 font-bold leading-relaxed">
+                Your Reels have 42% higher retention than the top leader due to fast-paced editing.
+              </p>
+           </div>
+           <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100">
+              <div className="flex items-center gap-3 mb-4 text-amber-600">
+                <AlertTriangle size={24} />
+                <span className="font-black text-xs uppercase tracking-widest">Opportunity</span>
+              </div>
+              <p className="text-sm text-amber-900 font-bold leading-relaxed">
+                Leaders post 2.4x more frequently. Increasing volume by 1 post/day could boost reach by 28%.
+              </p>
+           </div>
+           <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100">
+              <div className="flex items-center gap-3 mb-4 text-indigo-600">
+                <Zap size={24} />
+                <span className="font-black text-xs uppercase tracking-widest">Next Move</span>
+              </div>
+              <p className="text-sm text-indigo-900 font-bold leading-relaxed">
+                Shift focus to "Educational Carousels" which are currently seeing a 15% engagement surge for competitors.
+              </p>
+           </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (showCompetitorPanel) {
+    return <CompetitorPanel />;
+  }
 
   return (
     <div className="space-y-8 pb-12">

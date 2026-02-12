@@ -2,9 +2,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { IGContentResponse, IGTrend } from "../types";
 
-// Corrected initialization using process.env.API_KEY directly as a named parameter
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export interface IGAuditResponse {
   score: number;
   summary: string;
@@ -13,12 +10,14 @@ export interface IGAuditResponse {
   recommendations: string[];
 }
 
+// Initializing ai inside each function to ensure the latest API key is used from process.env.API_KEY
 export const generateInstagramContent = async (prompt: {
   topic: string;
   target: string;
   tone: string;
 }): Promise<IGContentResponse | null> => {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Generate Instagram content for:
@@ -63,6 +62,7 @@ export const generateInstagramContent = async (prompt: {
 
 export const getTrendingTrends = async (niche: string): Promise<{trends: IGTrend[], globalHashtags: string[]} | null> => {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Analyze current social media trends for the niche: "${niche}". 
@@ -106,6 +106,7 @@ export const getTrendingTrends = async (niche: string): Promise<{trends: IGTrend
 
 export const generateAIReply = async (context: string, incomingMessage: string): Promise<string> => {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `You are an AI Social Media Assistant. 
@@ -122,6 +123,7 @@ export const generateAIReply = async (context: string, incomingMessage: string):
 
 export const generateFullAudit = async (stats: any): Promise<IGAuditResponse | null> => {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Perform a professional Instagram Account Audit for the following weekly metrics:
