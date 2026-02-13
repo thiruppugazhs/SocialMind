@@ -30,40 +30,10 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
   const [copiedHashtag, setCopiedHashtag] = useState<string | null>(null);
   const [clusterCopied, setClusterCopied] = useState(false);
   
-  const [trends, setTrends] = useState<IGTrend[]>([
-    { 
-      title: 'The "Get Ready With Me" Minimalist Edit', 
-      type: 'Reel Format', 
-      viralScore: '98%', 
-      audio: 'Original Audio - GlowSkin India', 
-      hashtags: ['GRWM', 'Minimalist'],
-      insight: 'High conversion for skincare brands. Focus on clean transitions and soft lighting.'
-    },
-    { 
-      title: 'Glass Skin Challenge 2024', 
-      type: 'Hashtag Trend', 
-      viralScore: '92%', 
-      audio: 'Sunset Vibes by Lo-Fi Beats',
-      hashtags: ['GlassSkin', 'SkinCare'],
-      insight: 'Viral in metro cities. Audience engagement peaks with "Before vs After" results.'
-    },
-    { 
-      title: 'Sustainable Packaging Unboxing', 
-      type: 'Video Format', 
-      viralScore: '87%', 
-      audio: 'Nature Sounds (Trending)',
-      hashtags: ['EcoFriendly', 'Unboxing'],
-      insight: 'Resonates with Gen Z values. Use organic textures and ASMR audio.'
-    },
-  ]);
-  
-  const [audioTracks, setAudioTracks] = useState([
-    { title: 'Original Audio - GlowSkin India', trend: 'Rising Fast' },
-    { title: 'Sunset Vibes by Lo-Fi Beats', trend: 'Viral' },
-    { title: 'Nature Sounds (Trending)', trend: 'Sustainable' },
-  ]);
-  
-  const [hashtags, setHashtags] = useState(['SkincareRoutine', 'GlassSkinIndia', 'AIBranding', 'MorningRituals', 'OrganicLife', 'StartupIndia', 'GenZSkincare', 'SustainableLiving', 'ViralIndia', 'CreatorEconomy']);
+  // Demo data removed - will be populated from API
+  const [trends, setTrends] = useState<IGTrend[]>([]);
+  const [audioTracks, setAudioTracks] = useState<any[]>([]);
+  const [hashtags, setHashtags] = useState<string[]>([]);
 
   // Sync audio tracks when trends update from AI
   useEffect(() => {

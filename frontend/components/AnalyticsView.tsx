@@ -36,57 +36,14 @@ import {
   Trophy
 } from 'lucide-react';
 
-const sentimentData = [
-  { name: 'Positive', value: 72, color: '#10b981' },
-  { name: 'Neutral', value: 18, color: '#f59e0b' },
-  { name: 'Negative', value: 10, color: '#ef4444' },
-];
-
-const ageData = [
-  { name: '13-17', count: 1200 },
-  { name: '18-24', count: 4500 },
-  { name: '25-34', count: 3200 },
-  { name: '35-44', count: 1100 },
-  { name: '45-54', count: 650 },
-  { name: '55+', count: 230 },
-];
-
-const genderData = [
-  { name: 'Female', value: 58, color: '#ec4899' },
-  { name: 'Male', value: 35, color: '#6366f1' },
-  { name: 'Non-binary', value: 7, color: '#94a3b8' },
-];
-
-const countryData = [
-  { name: 'India', value: 65 },
-  { name: 'USA', value: 15 },
-  { name: 'UAE', value: 8 },
-  { name: 'UK', value: 7 },
-  { name: 'Canada', value: 5 },
-];
-
-const stateData = [
-  { name: 'Maharashtra', value: 28 },
-  { name: 'Karnataka', value: 22 },
-  { name: 'Delhi', value: 18 },
-  { name: 'Tamil Nadu', value: 12 },
-  { name: 'Telangana', value: 10 },
-  { name: 'Others', value: 10 },
-];
-
-const cityData = [
-  { name: 'Mumbai', value: 35 },
-  { name: 'Bangalore', value: 28 },
-  { name: 'New Delhi', value: 15 },
-  { name: 'Pune', value: 12 },
-  { name: 'Hyderabad', value: 10 },
-];
-
-const competitorData = [
-  { name: 'You', engagement: 4.8, growth: 12, frequency: 5 },
-  { name: 'Niche Avg', engagement: 3.2, growth: 8, frequency: 3 },
-  { name: 'Top Leader', engagement: 6.5, growth: 25, frequency: 12 },
-];
+// Demo data removed - will be populated from API
+const sentimentData: any[] = [];
+const ageData: any[] = [];
+const genderData: any[] = [];
+const countryData: any[] = [];
+const stateData: any[] = [];
+const cityData: any[] = [];
+const competitorData: any[] = [];
 
 const AnalyticsView: React.FC = () => {
   const [locationTab, setLocationTab] = useState<'country' | 'state' | 'city'>('country');

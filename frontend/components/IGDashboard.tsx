@@ -33,49 +33,13 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { generateFullAudit, IGAuditResponse } from '../services/apiService';
 import { View } from '../types';
 
-const mockData = [
-  { name: 'Mon', followers: 4000, reach: 2400, impressions: 3100, engagement: 4.1, saved: 2 },
-  { name: 'Tue', followers: 4500, reach: 3200, impressions: 4200, engagement: 4.3, saved: 4 },
-  { name: 'Wed', followers: 4300, reach: 5000, impressions: 6100, engagement: 4.8, saved: 3 },
-  { name: 'Thu', followers: 4800, reach: 4100, impressions: 5300, engagement: 4.5, saved: 5 },
-  { name: 'Fri', followers: 5200, reach: 6000, impressions: 7800, engagement: 5.2, saved: 4 },
-  { name: 'Sat', followers: 5800, reach: 7500, impressions: 9200, engagement: 6.0, saved: 3 },
-  { name: 'Sun', followers: 6100, reach: 8200, impressions: 10500, engagement: 6.4, saved: 3 },
-];
-
-const mockFollowers = [
-  { name: 'Priya Sharma', handle: 'priya_m', followers: '12K', joined: '2d ago', avatar: 'https://picsum.photos/seed/p/100/100' },
-  { name: 'Rahul Vibe', handle: 'rahul_vibe', followers: '45K', joined: '5d ago', avatar: 'https://picsum.photos/seed/r/100/100' },
-  { name: 'Nike India', handle: 'nike_india', followers: '1.2M', joined: '1w ago', avatar: 'https://picsum.photos/seed/n/100/100' },
-  { name: 'Tech Guru', handle: 'tech_guru', followers: '280K', joined: '1w ago', avatar: 'https://picsum.photos/seed/t/100/100' },
-  { name: 'Aman Deep', handle: 'aman_clicks', followers: '8.4K', joined: '3w ago', avatar: 'https://picsum.photos/seed/a/100/100' },
-];
-
-const mockLikedPosts = [
-  { id: 1, type: 'post', caption: 'Summer glow is real! ✨ #skincare #lifestyle', date: 'Oct 24', likes: 1200, thumb: 'https://picsum.photos/seed/s1/100/100' },
-  { id: 2, type: 'reel', caption: 'How to use AI for growth 🚀 #socialmedia #tips', date: 'Oct 23', likes: 4500, thumb: 'https://picsum.photos/seed/s2/100/100' },
-  { id: 3, type: 'post', caption: 'Morning rituals 🌿 #peaceful #mindset', date: 'Oct 22', likes: 800, thumb: 'https://picsum.photos/seed/s3/100/100' },
-];
-
-const engagementTypesData = [
-  { name: 'Reels', value: 6.8, color: '#ec4899' },
-  { name: 'Carousels', value: 4.2, color: '#818cf8' },
-  { name: 'Static Posts', value: 2.5, color: '#94a3b8' },
-];
-
-const impressionSourcesData = [
-  { name: 'Home', value: 45, color: '#6366f1' },
-  { name: 'Explore', value: 32, color: '#ec4899' },
-  { name: 'Profile', value: 15, color: '#8b5cf6' },
-  { name: 'Hashtags', value: 8, color: '#f43f5e' },
-];
-
-const aiSavingsData = [
-  { category: 'Content Creation', hours: 10, icon: <Sparkles size={16}/> },
-  { category: 'Automation', hours: 8, icon: <Zap size={16}/> },
-  { category: 'Trend Scanning', hours: 4, icon: <TrendingUp size={16}/> },
-  { category: 'Analytics Reporting', hours: 2, icon: <BarChart3 size={16}/> },
-];
+// Demo data removed - will be populated from API
+const mockData: any[] = [];
+const mockFollowers: any[] = [];
+const mockLikedPosts: any[] = [];
+const engagementTypesData: any[] = [];
+const impressionSourcesData: any[] = [];
+const aiSavingsData: any[] = [];
 
 const StatCard = ({ label, value, trend, icon: Icon, color, onClick }: any) => (
   <button 

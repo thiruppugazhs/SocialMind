@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import instagramRoutes from './routes/instagram';
-import contentRoutes from './routes/content';
-import trendsRoutes from './routes/trends';
+import instagramRoutes from './routes/instagram.js';
+import contentRoutes from './routes/content.js';
+import trendsRoutes from './routes/trends.js';
 
 dotenv.config();
 

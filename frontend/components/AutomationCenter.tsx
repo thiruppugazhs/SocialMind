@@ -32,41 +32,12 @@ const AutomationCenter: React.FC = () => {
   // New ID search state for adding contacts
   const [newIdSearch, setNewIdSearch] = useState('');
   
-  // Mock Contact Data
-  const [contacts, setContacts] = useState<IGContact[]>([
-    { id: 'c1', username: 'nike_india', category: 'business', avatar: 'https://picsum.photos/seed/nike/100/100' },
-    { id: 'c2', username: 'rahul_vibe', category: 'friends', avatar: 'https://picsum.photos/seed/rahul/100/100' },
-    { id: 'c3', username: 'skincare_guru', category: 'business', avatar: 'https://picsum.photos/seed/skin/100/100' },
-    { id: 'c4', username: 'zara_lifestyle', category: 'business', avatar: 'https://picsum.photos/seed/zara/100/100' },
-    { id: 'c5', username: 'amit_clicks', category: 'friends', avatar: 'https://picsum.photos/seed/amit/100/100' },
-  ]);
+  const [contacts, setContacts] = useState<IGContact[]>([]);
 
-  // Mock Interactions (Live Queue)
-  const [items, setItems] = useState<IGAutomationItem[]>([
-    { 
-      id: '1', type: 'dm', user: 'nike_india', category: 'business', 
-      message: 'Interested in a partnership for Q4.', 
-      aiSuggestedReply: 'Thank you for reaching out. We are very interested. Could you please share the deck at partnerships@socialmind.ai?', 
-      status: 'auto_sent', timestamp: '2m ago',
-      url: 'https://www.instagram.com/direct/inbox/'
-    },
-    { 
-      id: '2', type: 'comment', user: 'rahul_vibe', category: 'friends', 
-      message: 'Bro, this reel is fire! 🔥', 
-      aiSuggestedReply: 'Thanks man! Really glad you liked the edit. We should catch up soon! 🙌', 
-      status: 'pending', timestamp: '10m ago',
-      url: 'https://www.instagram.com/reels/C_X_X_X/'
-    },
-  ]);
+  // Demo data removed - will be populated from API
+  const [items, setItems] = useState<IGAutomationItem[]>([]);
 
-  const [historyItems, setHistoryItems] = useState<IGAutomationItem[]>([
-    { id: 'h1', type: 'like', user: 'nike_india', category: 'business', status: 'completed', timestamp: '5m ago', url: 'https://www.instagram.com/p/C-P1_abc/' },
-    { id: 'h2', type: 'comment', user: 'skincare_guru', category: 'business', status: 'completed', timestamp: '1h ago', url: 'https://www.instagram.com/p/D-P1_xyz/' },
-    { id: 'h3', type: 'dm', user: 'amit_clicks', category: 'friends', status: 'completed', timestamp: '3h ago', url: 'https://www.instagram.com/direct/' },
-    { id: 'h4', type: 'like', user: 'zara_lifestyle', category: 'business', status: 'completed', timestamp: '1d ago', url: 'https://www.instagram.com/p/E-P1_zzz/' },
-    { id: 'h5', type: 'block', user: 'spam_bot_99', category: 'business', status: 'completed', timestamp: '2d ago', url: '#' },
-    { id: 'h6', type: 'block', user: 'fake_account_01', category: 'business', status: 'completed', timestamp: '3d ago', url: '#' },
-  ]);
+  const [historyItems, setHistoryItems] = useState<IGAutomationItem[]>([]);
 
   const filteredContacts = useMemo(() => 
     contacts.filter(c => c.username.toLowerCase().includes(searchTerm.toLowerCase())),

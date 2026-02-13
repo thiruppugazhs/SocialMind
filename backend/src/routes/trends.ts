@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
+import ContentGenerationService from '../services/contentService.js';
 
 const router = Router();
 
