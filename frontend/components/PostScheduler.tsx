@@ -198,12 +198,8 @@ const PostScheduler: React.FC<Props> = ({ initialData, onClearInitial }) => {
   const handleGenerateAI = async () => {
     if (!caption && mediaList.length === 0) return alert("Provide context for AI.");
     setAiLoading(true);
-    try {
-      const result = await generateInstagramContent({ topic: caption, target: "Followers", tone: "Trendy" });
-      if (result) setCaption(result.caption + '\n\n' + result.hashtags.map((h: string) => `#${h}`).join(' '));
-    } catch (error) {
-      console.error('Error generating content:', error);
-    }
+    const result = await generateInstagramContent({ topic: caption, target: "Followers", tone: "Trendy" });
+    if (result) setCaption(result.caption + '\n\n' + result.hashtags.map(h => `#${h}`).join(' '));
     setAiLoading(false);
   };
 
@@ -228,7 +224,7 @@ const PostScheduler: React.FC<Props> = ({ initialData, onClearInitial }) => {
 
   return (
     <div className="max-w-6xl mx-auto pb-20 px-4">
-      {/* Preview Modal */}
+      {/* Preview Modal Inlined to fix mounting issues */}
       {showPreviewModal && (
         <div 
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"

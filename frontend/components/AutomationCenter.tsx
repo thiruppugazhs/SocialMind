@@ -29,8 +29,10 @@ const AutomationCenter: React.FC = () => {
   const [editingReplyId, setEditingReplyId] = useState<string | null>(null);
   const [tempReply, setTempReply] = useState('');
   
+  // New ID search state for adding contacts
   const [newIdSearch, setNewIdSearch] = useState('');
   
+  // Mock Contact Data
   const [contacts, setContacts] = useState<IGContact[]>([
     { id: 'c1', username: 'nike_india', category: 'business', avatar: 'https://picsum.photos/seed/nike/100/100' },
     { id: 'c2', username: 'rahul_vibe', category: 'friends', avatar: 'https://picsum.photos/seed/rahul/100/100' },
@@ -39,6 +41,7 @@ const AutomationCenter: React.FC = () => {
     { id: 'c5', username: 'amit_clicks', category: 'friends', avatar: 'https://picsum.photos/seed/amit/100/100' },
   ]);
 
+  // Mock Interactions (Live Queue)
   const [items, setItems] = useState<IGAutomationItem[]>([
     { 
       id: '1', type: 'dm', user: 'nike_india', category: 'business', 
@@ -62,6 +65,7 @@ const AutomationCenter: React.FC = () => {
     { id: 'h3', type: 'dm', user: 'amit_clicks', category: 'friends', status: 'completed', timestamp: '3h ago', url: 'https://www.instagram.com/direct/' },
     { id: 'h4', type: 'like', user: 'zara_lifestyle', category: 'business', status: 'completed', timestamp: '1d ago', url: 'https://www.instagram.com/p/E-P1_zzz/' },
     { id: 'h5', type: 'block', user: 'spam_bot_99', category: 'business', status: 'completed', timestamp: '2d ago', url: '#' },
+    { id: 'h6', type: 'block', user: 'fake_account_01', category: 'business', status: 'completed', timestamp: '3d ago', url: '#' },
   ]);
 
   const filteredContacts = useMemo(() => 
@@ -154,6 +158,7 @@ const AutomationCenter: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Top Navigation & Actions */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
         <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto max-w-full no-scrollbar">
           {['queue', 'contacts', 'history'].map(tab => (
@@ -215,6 +220,7 @@ const AutomationCenter: React.FC = () => {
         </div>
       )}
 
+      {/* Main Content Area */}
       <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden min-h-[500px]">
         
         {activeTab === 'queue' && (

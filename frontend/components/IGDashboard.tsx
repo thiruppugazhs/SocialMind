@@ -30,7 +30,7 @@ import {
   Bookmark
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts';
-import { generateFullAudit } from '../services/apiService';
+import { generateFullAudit, IGAuditResponse } from '../services/apiService';
 import { View } from '../types';
 
 const mockData = [
@@ -101,7 +101,7 @@ interface Props {
 
 const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
   const [isAuditLoading, setIsAuditLoading] = useState(false);
-  const [auditResult, setAuditResult] = useState<any | null>(null);
+  const [auditResult, setAuditResult] = useState<IGAuditResponse | null>(null);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
   const [selectedPostForLikes, setSelectedPostForLikes] = useState<any | null>(null);
@@ -109,20 +109,16 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
 
   const handleGenerateAudit = async () => {
     setIsAuditLoading(true);
-    try {
-      const result = await generateFullAudit({ 
-        followers: '6,124', 
-        reach: '45.2K', 
-        impressions: '128K',
-        likes: '8.4K',
-        engagement: '4.8%' 
-      });
-      if (result) {
-        setAuditResult(result);
-        setShowAuditModal(true);
-      }
-    } catch (error) {
-      console.error('Error generating audit:', error);
+    const result = await generateFullAudit({ 
+      followers: '6,124', 
+      reach: '45.2K', 
+      impressions: '128K',
+      likes: '8.4K',
+      engagement: '4.8%' 
+    });
+    if (result) {
+      setAuditResult(result);
+      setShowAuditModal(true);
     }
     setIsAuditLoading(false);
   };
@@ -410,15 +406,15 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
                 <div className="bg-white p-8 rounded-3xl border border-slate-100 flex flex-col items-center justify-center text-center">
                   <p className="text-xs font-black uppercase text-slate-400 mb-2">Health Score</p>
                   <div className="relative w-32 h-32 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90"><circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-100" /><circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={364} strokeDashoffset={364 - (364 * (auditResult.score || 0)) / 100} className="text-pink-600" /></svg>
-                    <span className="absolute text-4xl font-black text-slate-800">{auditResult.score || 0}</span>
+                    <svg className="w-full h-full transform -rotate-90"><circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-100" /><circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={364} strokeDashoffset={364 - (364 * auditResult.score) / 100} className="text-pink-600" /></svg>
+                    <span className="absolute text-4xl font-black text-slate-800">{auditResult.score}</span>
                   </div>
                 </div>
-                <div className="md:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm"><h3 className="font-black text-slate-800 mb-4 flex items-center gap-2"><Zap className="text-amber-500" size={18} /> AI Executive Summary</h3><p className="text-slate-600 leading-relaxed italic">"{auditResult.summary || 'No summary available'}"</p></div>
+                <div className="md:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm"><h3 className="font-black text-slate-800 mb-4 flex items-center gap-2"><Zap className="text-amber-500" size={18} /> AI Executive Summary</h3><p className="text-slate-600 leading-relaxed italic">"{auditResult.summary}"</p></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4"><h4 className="text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">Check Strengths</h4>{(auditResult.strengths || []).map((s: string, i: number) => (<div key={i} className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-emerald-800 text-xs font-bold">{s}</div>))}</div>
-                <div className="space-y-4"><h4 className="text-xs font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">Areas for Optimization</h4>{(auditResult.weaknesses || []).map((w: string, i: number) => (<div key={i} className="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 text-amber-800 text-xs font-bold">{w}</div>))}</div>
+                <div className="space-y-4"><h4 className="text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">Check Strengths</h4>{auditResult.strengths.map((s, i) => (<div key={i} className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-emerald-800 text-xs font-bold">{s}</div>))}</div>
+                <div className="space-y-4"><h4 className="text-xs font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">Areas for Optimization</h4>{auditResult.weaknesses.map((w, i) => (<div key={i} className="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 text-amber-800 text-xs font-bold">{w}</div>))}</div>
               </div>
             </div>
             <div className="p-6 bg-white border-t border-slate-100 flex gap-4">

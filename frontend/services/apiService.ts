@@ -1,6 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import { IGContentResponse, IGTrend, APIResponse } from '../types';
 
+export interface IGAuditResponse {
+  score: number;
+  summary: string;
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+}
+
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? '/api' 
   : 'http://localhost:5000/api';
@@ -68,14 +76,6 @@ export const generateAIReply = async (context: string, incomingMessage: string):
 };
 
 // Generate Account Audit
-export interface IGAuditResponse {
-  score: number;
-  summary: string;
-  strengths: string[];
-  weaknesses: string[];
-  recommendations: string[];
-}
-
 export const generateFullAudit = async (stats: any): Promise<IGAuditResponse | null> => {
   try {
     const response = await apiClient.post<APIResponse<IGAuditResponse>>(

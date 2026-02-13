@@ -65,6 +65,7 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
   
   const [hashtags, setHashtags] = useState(['SkincareRoutine', 'GlassSkinIndia', 'AIBranding', 'MorningRituals', 'OrganicLife', 'StartupIndia', 'GenZSkincare', 'SustainableLiving', 'ViralIndia', 'CreatorEconomy']);
 
+  // Sync audio tracks when trends update from AI
   useEffect(() => {
     const newTracks = trends.map(t => ({ title: t.audio, trend: 'Rising Fast' }));
     setAudioTracks(newTracks);
@@ -73,14 +74,10 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
   const handleScan = async () => {
     if (!niche.trim()) return;
     setIsScanning(true);
-    try {
-      const data = await getTrendingTrends(niche);
-      if (data) {
-        setTrends(data.trends);
-        setHashtags(data.globalHashtags);
-      }
-    } catch (error) {
-      console.error('Error scanning trends:', error);
+    const data = await getTrendingTrends(niche);
+    if (data) {
+      setTrends(data.trends);
+      setHashtags(data.globalHashtags);
     }
     setIsScanning(false);
   };
@@ -98,6 +95,7 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
 
   const handleLoadMoreTracks = () => {
     setIsLoadingMore(true);
+    // Simulate fetching more trending audio based on current niche
     setTimeout(() => {
       const moreTracks = [
         { title: `${niche} Mood - Instrumental`, trend: 'New' },
@@ -111,6 +109,7 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
 
   return (
     <div className="space-y-10 pb-20">
+      {/* Header Growth Engine Section */}
       <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-pink-950 p-10 rounded-[3rem] text-white relative overflow-hidden shadow-2xl group">
         <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:opacity-10 transition-opacity duration-1000">
           <Flame size={300} strokeWidth={1} />
@@ -157,6 +156,7 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Left Column: Viral Content Formats */}
         <div className="lg:col-span-8 space-y-8">
           <div className="flex items-center justify-between px-2">
             <div>
@@ -226,7 +226,9 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
           </div>
         </div>
 
+        {/* Right Column: Trending Audio & Hashtags */}
         <div className="lg:col-span-4 space-y-10">
+          {/* Audio Library */}
           <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm space-y-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-violet-100 text-violet-600 rounded-2xl">
@@ -263,6 +265,7 @@ const TrendHunter: React.FC<Props> = ({ onApplyTrend }) => {
             </button>
           </div>
 
+          {/* Hashtag Clusters */}
           <div className="bg-slate-900 p-8 rounded-[3rem] shadow-2xl space-y-6 relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-pink-600/20 blur-[60px]" />
             <div className="flex items-center gap-3 relative z-10">
