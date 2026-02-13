@@ -21,9 +21,15 @@ import {
   ChevronRight,
   UserPlus,
   ExternalLink,
-  FileText
+  FileText,
+  Clock,
+  PieChart as PieChartIcon,
+  Navigation,
+  Globe,
+  Share2,
+  Bookmark
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts';
 import { generateFullAudit, IGAuditResponse } from '../services/geminiService';
 import { View } from '../types';
 
@@ -43,11 +49,6 @@ const mockFollowers = [
   { name: 'Nike India', handle: 'nike_india', followers: '1.2M', joined: '1w ago', avatar: 'https://picsum.photos/seed/n/100/100' },
   { name: 'Tech Guru', handle: 'tech_guru', followers: '280K', joined: '1w ago', avatar: 'https://picsum.photos/seed/t/100/100' },
   { name: 'Aman Deep', handle: 'aman_clicks', followers: '8.4K', joined: '3w ago', avatar: 'https://picsum.photos/seed/a/100/100' },
-  { name: 'Sarah Jenkins', handle: 's_jenkins_art', followers: '22K', joined: '1mo ago', avatar: 'https://picsum.photos/seed/s/100/100' },
-  { name: 'David Miller', handle: 'miller_fit', followers: '105K', joined: '2mo ago', avatar: 'https://picsum.photos/seed/d/100/100' },
-  { name: 'Elena Rossi', handle: 'rossi_travels', followers: '67K', joined: '3mo ago', avatar: 'https://picsum.photos/seed/e/100/100' },
-  { name: 'Kevin Durant', handle: 'kd_official', followers: '12M', joined: '1y ago', avatar: 'https://picsum.photos/seed/k/100/100' },
-  { name: 'Zoya Khan', handle: 'zoyakhan_vlogs', followers: '4.2K', joined: '4w ago', avatar: 'https://picsum.photos/seed/z/100/100' },
 ];
 
 const mockLikedPosts = [
@@ -56,11 +57,24 @@ const mockLikedPosts = [
   { id: 3, type: 'post', caption: 'Morning rituals 🌿 #peaceful #mindset', date: 'Oct 22', likes: 800, thumb: 'https://picsum.photos/seed/s3/100/100' },
 ];
 
-const mockLikingUsers = [
-  { name: 'Emily Watts', handle: 'em_watts', avatar: 'https://picsum.photos/seed/e/100/100' },
-  { name: 'John Doe', handle: 'john_doe_99', avatar: 'https://picsum.photos/seed/j/100/100' },
-  { name: 'Style Central', handle: 'style_central', avatar: 'https://picsum.photos/seed/st/100/100' },
-  { name: 'Marco Polo', handle: 'marco_adventures', avatar: 'https://picsum.photos/seed/mp/100/100' },
+const engagementTypesData = [
+  { name: 'Reels', value: 6.8, color: '#ec4899' },
+  { name: 'Carousels', value: 4.2, color: '#818cf8' },
+  { name: 'Static Posts', value: 2.5, color: '#94a3b8' },
+];
+
+const impressionSourcesData = [
+  { name: 'Home', value: 45, color: '#6366f1' },
+  { name: 'Explore', value: 32, color: '#ec4899' },
+  { name: 'Profile', value: 15, color: '#8b5cf6' },
+  { name: 'Hashtags', value: 8, color: '#f43f5e' },
+];
+
+const aiSavingsData = [
+  { category: 'Content Creation', hours: 10, icon: <Sparkles size={16}/> },
+  { category: 'Automation', hours: 8, icon: <Zap size={16}/> },
+  { category: 'Trend Scanning', hours: 4, icon: <TrendingUp size={16}/> },
+  { category: 'Analytics Reporting', hours: 2, icon: <BarChart3 size={16}/> },
 ];
 
 const StatCard = ({ label, value, trend, icon: Icon, color, onClick }: any) => (
@@ -129,11 +143,11 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
     </div>
   );
 
+  // Drill-down Logic
   if (selectedStat === 'Total Followers') {
     const displayedFollowers = isFollowersExpanded ? mockFollowers : mockFollowers.slice(0, 5);
-    
     return (
-      <DetailPanel title="Total Followers (6,124)" onClose={() => { setSelectedStat(null); setIsFollowersExpanded(false); }}>
+      <DetailPanel title="Total Followers (6,124)" onClose={() => setSelectedStat(null)}>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {displayedFollowers.map((f, i) => (
@@ -142,29 +156,13 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
                   <img src={f.avatar} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" alt={f.name} />
                   <div>
                     <p className="font-bold text-slate-800">{f.name}</p>
-                    <a 
-                      href={`https://instagram.com/${f.handle}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-xs text-pink-600 font-bold hover:underline flex items-center gap-1"
-                    >
-                      @{f.handle} <ExternalLink size={10} />
-                    </a>
+                    <a href={`https://instagram.com/${f.handle}`} target="_blank" rel="noopener noreferrer" className="text-xs text-pink-600 font-bold hover:underline flex items-center gap-1">@{f.handle} <ExternalLink size={10} /></a>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-black text-slate-500">{f.followers} followers</p>
-                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Joined {f.joined}</p>
-                </div>
+                <div className="text-right"><p className="text-xs font-black text-slate-500">{f.followers}</p></div>
               </div>
             ))}
           </div>
-          <button 
-            onClick={() => setIsFollowersExpanded(!isFollowersExpanded)}
-            className="w-full py-4 text-slate-400 font-bold text-sm border-2 border-dashed border-slate-200 rounded-2xl hover:text-slate-600 hover:border-slate-300 transition-all"
-          >
-            {isFollowersExpanded ? "Show Less" : "View All 6,124 Followers"}
-          </button>
         </div>
       </DetailPanel>
     );
@@ -172,77 +170,199 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
 
   if (selectedStat === 'Total Likes') {
     return (
-      <DetailPanel 
-        title={selectedPostForLikes ? "Post Engagement" : "Recent Content Performance"} 
-        onClose={() => selectedPostForLikes ? setSelectedPostForLikes(null) : setSelectedStat(null)}
-      >
-        {selectedPostForLikes ? (
-          <div className="space-y-6 animate-in zoom-in duration-300">
-             <div className="flex items-start gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                <img src={selectedPostForLikes.thumb} className="w-24 h-24 rounded-2xl object-cover shadow-lg" alt="Post" />
-                <div>
-                  <h4 className="text-lg font-black text-slate-800 mb-1">{selectedPostForLikes.caption}</h4>
-                  <div className="flex gap-4 text-sm font-bold text-slate-500">
-                    <span className="flex items-center gap-1 text-red-500"><Heart size={16} fill="currentColor"/> {selectedPostForLikes.likes} Likes</span>
-                    <span>{selectedPostForLikes.date}</span>
+      <DetailPanel title="Recent Engagement" onClose={() => setSelectedStat(null)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {mockLikedPosts.map((p) => (
+            <div key={p.id} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group hover:shadow-lg transition-all">
+              <img src={p.thumb} className="w-full aspect-square object-cover" alt="Post" />
+              <div className="p-4">
+                <p className="font-bold text-slate-800 line-clamp-1">{p.caption}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-pink-600 font-black text-xs">{p.likes} Likes</span>
+                  <span className="text-slate-400 text-[10px] uppercase font-bold">{p.date}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </DetailPanel>
+    );
+  }
+
+  if (selectedStat === 'Total Impressions') {
+    return (
+      <DetailPanel title="Discovery & Impressions Breakdown" onClose={() => setSelectedStat(null)}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="space-y-8">
+            <h4 className="text-xl font-black text-slate-800">Traffic Sources</h4>
+            <div className="space-y-6">
+              {impressionSourcesData.map(item => (
+                <div key={item.name} className="space-y-2">
+                  <div className="flex justify-between items-center text-sm font-bold">
+                    <span className="text-slate-600">{item.name}</span>
+                    <span className="text-slate-900">{item.value}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }} />
                   </div>
                 </div>
-             </div>
-             <div className="space-y-3">
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Recent Likes from Followers</h5>
-                {mockLikingUsers.map((u, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:shadow-sm transition-all">
-                    <div className="flex items-center gap-3">
-                      <img src={u.avatar} className="w-10 h-10 rounded-full" alt={u.name} />
-                      <div>
-                        <p className="text-sm font-bold text-slate-800">{u.name}</p>
-                        <a 
-                          href={`https://instagram.com/${u.handle}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-xs text-slate-400 hover:text-pink-600 transition-colors"
-                        >
-                          @{u.handle}
-                        </a>
-                      </div>
-                    </div>
-                    <button className="px-4 py-2 bg-pink-50 text-pink-600 rounded-xl text-xs font-black">Profile</button>
-                  </div>
-                ))}
-             </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Total Likes for each Post/Reel</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockLikedPosts.map((p) => (
-                <button 
-                  key={p.id} 
-                  onClick={() => setSelectedPostForLikes(p)}
-                  className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden group hover:shadow-xl transition-all text-left"
-                >
-                  <div className="aspect-square relative overflow-hidden bg-slate-100">
-                    <img src={p.thumb} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Post" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <div className="text-white font-black flex items-center gap-2"><Heart fill="white" size={24}/> {p.likes}</div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px] font-black uppercase tracking-wider">{p.type}</span>
-                      <span className="text-[10px] text-slate-400 font-bold">{p.date}</span>
-                    </div>
-                    <p className="font-bold text-slate-800 line-clamp-2 leading-tight">{p.caption}</p>
-                    <div className="mt-4 flex items-center justify-between">
-                       <span className="text-sm font-black text-pink-600">{p.likes} Likes</span>
-                       <ChevronRight size={16} className="text-slate-300 group-hover:text-pink-600" />
-                    </div>
-                  </div>
-                </button>
               ))}
             </div>
+            <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100">
+               <div className="flex items-center gap-2 text-indigo-700 font-black text-xs uppercase mb-2"><TrendingUp size={16}/> Trend Insight</div>
+               <p className="text-sm text-indigo-900 leading-relaxed">Impressions from <span className="font-black">Explore</span> have increased by 24% this week, indicating high viral potential for your current content theme.</p>
+            </div>
           </div>
-        )}
+          <div className="h-[400px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie 
+                  data={impressionSourcesData} 
+                  cx="50%" 
+                  cy="50%" 
+                  innerRadius={80} 
+                  outerRadius={120} 
+                  paddingAngle={5} 
+                  dataKey="value"
+                >
+                  {impressionSourcesData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </DetailPanel>
+    );
+  }
+
+  if (selectedStat === 'Weekly Reach') {
+    return (
+      <DetailPanel title="Weekly Reach Analysis" onClose={() => setSelectedStat(null)}>
+        <div className="space-y-8">
+          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm h-96">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={mockData}>
+                <defs>
+                  <linearGradient id="colorReachFull" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8'}} />
+                <Tooltip contentStyle={{ borderRadius: '16px', border: 'none' }} />
+                <Area type="monotone" dataKey="reach" stroke="#6366f1" fill="url(#colorReachFull)" strokeWidth={4} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center">
+              <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Followers Reached</p>
+              <p className="text-2xl font-black text-slate-800">42,102</p>
+              <p className="text-xs text-slate-500 mt-1">68% of total</p>
+            </div>
+            <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center">
+              <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Non-Followers</p>
+              <p className="text-2xl font-black text-slate-800">19,820</p>
+              <p className="text-xs text-slate-500 mt-1">32% of total</p>
+            </div>
+            <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center">
+              <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Peak Day</p>
+              <p className="text-2xl font-black text-pink-600">Sunday</p>
+              <p className="text-xs text-slate-500 mt-1">10.5K reached</p>
+            </div>
+          </div>
+        </div>
+      </DetailPanel>
+    );
+  }
+
+  if (selectedStat === 'Avg. Engagement') {
+    return (
+      <DetailPanel title="Engagement Optimization" onClose={() => setSelectedStat(null)}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-7 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm h-80">
+            <h4 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-6">Efficiency by Post Type</h4>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={engagementTypesData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                <XAxis type="number" hide />
+                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#1e293b', fontWeight: 700}} width={100} />
+                <Tooltip />
+                <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={40}>
+                  {engagementTypesData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-pink-600 p-8 rounded-[2.5rem] text-white shadow-xl">
+               <Zap className="text-pink-200 mb-4" size={32} />
+               <h4 className="text-lg font-black mb-2">Reels are winning!</h4>
+               <p className="text-sm text-pink-50 opacity-90 leading-relaxed">Your Reels have a 170% higher engagement rate than static posts. Gemini recommends converting your top 3 blog posts into Reels this week.</p>
+            </div>
+            <div className="flex gap-4">
+               <div className="flex-1 bg-white p-6 rounded-3xl border border-slate-100 text-center">
+                 <p className="text-2xl font-black text-slate-800">128</p>
+                 <p className="text-[10px] font-black uppercase text-slate-400">Shares/Week</p>
+               </div>
+               <div className="flex-1 bg-white p-6 rounded-3xl border border-slate-100 text-center">
+                 <p className="text-2xl font-black text-slate-800">342</p>
+                 <p className="text-[10px] font-black uppercase text-slate-400">Saves/Week</p>
+               </div>
+            </div>
+          </div>
+        </div>
+      </DetailPanel>
+    );
+  }
+
+  if (selectedStat === 'AI Saved Hours') {
+    return (
+      <DetailPanel title="AI Productivity Log" onClose={() => setSelectedStat(null)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-6">
+            <div className="p-8 bg-slate-900 text-white rounded-[2.5rem] shadow-2xl">
+               <h4 className="text-4xl font-black mb-1">24.5 Hours</h4>
+               <p className="text-xs font-black uppercase tracking-widest text-indigo-400">Time saved this week</p>
+               <div className="mt-8 flex gap-2">
+                 {[1,2,3,4,5,6,7].map(i => <div key={i} className="flex-1 h-12 bg-white/10 rounded-lg relative overflow-hidden"><div className="absolute bottom-0 left-0 right-0 bg-pink-500 transition-all duration-1000" style={{ height: `${Math.random() * 80 + 20}%` }} /></div>)}
+               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+               {aiSavingsData.map((item, idx) => (
+                 <div key={idx} className="p-6 bg-white border border-slate-100 rounded-[2rem] hover:shadow-md transition-all">
+                   <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-800 mb-3">{item.icon}</div>
+                   <p className="text-xl font-black text-slate-800">{item.hours}h</p>
+                   <p className="text-[10px] font-black uppercase text-slate-400">{item.category}</p>
+                 </div>
+               ))}
+            </div>
+          </div>
+          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h4 className="text-lg font-black text-slate-800 mb-6 flex items-center gap-2"><Sparkles className="text-pink-500" size={20}/> Automation ROI</h4>
+            <div className="space-y-8">
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">72%</div>
+                 <div><p className="text-sm font-bold text-slate-800">Auto-Reply Accuracy</p><p className="text-xs text-slate-500">Gemini successfully handled 124 DMs without human intervention.</p></div>
+               </div>
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black">15min</div>
+                 <div><p className="text-sm font-bold text-slate-800">Content Gen Time</p><p className="text-xs text-slate-500">Average time to generate a full campaign, down from 4 hours.</p></div>
+               </div>
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black">Real</div>
+                 <div><p className="text-sm font-bold text-slate-800">Trend Adaptation</p><p className="text-xs text-slate-500">Time to adapt to a viral audio reduced to minutes via AI notifications.</p></div>
+               </div>
+            </div>
+          </div>
+        </div>
       </DetailPanel>
     );
   }
@@ -298,16 +418,10 @@ const IGDashboard: React.FC<Props> = ({ onNavigate }) => {
               </div>
             </div>
             <div className="p-6 bg-white border-t border-slate-100 flex gap-4">
-              <button 
-                onClick={handleExportPdf} 
-                className="flex-1 py-4 bg-slate-50 text-slate-800 rounded-2xl font-bold flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-100 transition-all"
-              >
+              <button onClick={handleExportPdf} className="flex-1 py-4 bg-slate-50 text-slate-800 rounded-2xl font-bold flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-100 transition-all">
                 <FileText size={18} /> Export PDF Report
               </button>
-              <button 
-                onClick={() => { onNavigate?.('ig-automation'); setShowAuditModal(false); }} 
-                className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 shadow-xl transition-all"
-              >
+              <button onClick={() => { onNavigate?.('ig-automation'); setShowAuditModal(false); }} className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 shadow-xl transition-all">
                 Implement Action Plan
               </button>
             </div>

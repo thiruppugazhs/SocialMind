@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   LayoutDashboard, 
@@ -23,7 +22,8 @@ import {
   ChevronLeft,
   Power,
   GripVertical,
-  Mail
+  Mail,
+  Users
 } from 'lucide-react';
 import { View, IGTrend } from './types';
 import PlatformSelector from './components/PlatformSelector';

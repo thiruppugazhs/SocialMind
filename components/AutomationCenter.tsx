@@ -3,30 +3,19 @@ import {
   MessageCircle, 
   Heart, 
   Search, 
-  Filter, 
-  ShieldCheck, 
-  Zap, 
-  Loader2, 
   CheckCircle2, 
   Users, 
   Briefcase, 
   UserPlus, 
-  MoreVertical, 
   Edit3, 
   Trash2, 
-  ShieldAlert, 
   SearchCheck, 
   Check, 
   X, 
-  History as HistoryIcon, 
   Ban, 
-  Clock, 
-  ArrowRight, 
   ExternalLink,
   Save,
-  Plus,
   Send,
-  ChevronDown,
   User,
   LayoutList
 } from 'lucide-react';
@@ -108,7 +97,7 @@ const AutomationCenter: React.FC = () => {
   };
 
   const handleDeleteContact = (id: string) => {
-    const isConfirmed = window.confirm("Are you sure you want to remove this contact from the automation list?");
+    const isConfirmed = window.confirm("Are you sure you want to remove this contact?");
     if (isConfirmed) {
       setContacts((prev) => prev.filter((c) => c.id !== id));
     }
@@ -169,10 +158,15 @@ const AutomationCenter: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Top Navigation & Actions */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
         <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto max-w-full no-scrollbar">
           {['queue', 'contacts', 'history'].map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === tab ? 'bg-pink-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}>
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab as any)} 
+              className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === tab ? 'bg-pink-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
+            >
               {tab.charAt(0).toUpperCase() + tab.slice(1)} Manager
             </button>
           ))}
@@ -182,7 +176,7 @@ const AutomationCenter: React.FC = () => {
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input 
               type="text" 
-              placeholder={activeTab === 'contacts' ? "Filter contacts by ID..." : `Search ${activeTab}...`} 
+              placeholder={activeTab === 'contacts' ? "Search contacts..." : `Search ${activeTab}...`} 
               value={searchTerm} 
               onChange={(e) => setSearchTerm(e.target.value)} 
               className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 shadow-sm" 
@@ -226,7 +220,9 @@ const AutomationCenter: React.FC = () => {
         </div>
       )}
 
+      {/* Main Content Area */}
       <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden min-h-[500px]">
+        
         {activeTab === 'queue' && (
           <table className="w-full text-left">
             <thead className="bg-slate-50/50 border-b border-slate-100">
@@ -241,11 +237,21 @@ const AutomationCenter: React.FC = () => {
             <tbody className="divide-y divide-slate-50">
               {items.length > 0 ? items.map((item) => (
                 <tr key={item.id} className="group hover:bg-slate-50/50 transition-all cursor-pointer">
-                  <td className="px-8 py-6">{item.type === 'dm' ? <div className="text-indigo-600 font-black text-[10px] uppercase flex gap-1"><MessageCircle size={14}/> DM</div> : <div className="text-pink-600 font-black text-[10px] uppercase flex gap-1"><Heart size={14}/> Comment</div>}</td>
+                  <td className="px-8 py-6">
+                    {item.type === 'dm' ? <div className="text-indigo-600 font-black text-[10px] uppercase flex gap-1"><MessageCircle size={14}/> DM</div> : <div className="text-pink-600 font-black text-[10px] uppercase flex gap-1"><Heart size={14}/> Comment</div>}
+                  </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={`https://picsum.photos/seed/${item.user}/50/50`} className="w-9 h-9 rounded-full border shadow-sm" alt={item.user} />
-                      <a href={`https://www.instagram.com/${item.user}/`} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-800 hover:text-pink-600 transition-colors">@{item.user}</a>
+                      <a 
+                        href={`https://www.instagram.com/${item.user}/`} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="font-bold text-slate-800 hover:text-pink-600 transition-colors"
+                        onClick={e => e.stopPropagation()}
+                      >
+                        @{item.user}
+                      </a>
                     </div>
                     {getCategoryBadge(item.category)}
                   </td>
@@ -280,50 +286,43 @@ const AutomationCenter: React.FC = () => {
         {activeTab === 'contacts' && (
           <div className="p-8">
             <div className="flex flex-col gap-4 max-w-3xl mx-auto">
-              <div className="flex items-center gap-2 mb-4">
-                <Users size={18} className="text-pink-600" />
-                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">All Contacts ({filteredContacts.length})</h3>
-              </div>
-              
               {filteredContacts.length > 0 ? filteredContacts.map((contact) => (
-                <div key={contact.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-100 hover:shadow-md transition-all group flex items-center justify-between animate-in slide-in-from-bottom-2 duration-300">
-                  <div className="flex items-center gap-4">
-                    <img src={contact.avatar} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" alt={contact.username} />
+                <div key={contact.id} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:shadow-md transition-all group flex items-center justify-between animate-in slide-in-from-bottom-2 duration-300">
+                  <div className="flex items-center gap-6">
+                    <img src={contact.avatar} className="w-16 h-16 rounded-full border-2 border-white shadow-sm" alt={contact.username} />
                     <div className="flex flex-col">
                       <a 
                         href={`https://www.instagram.com/${contact.username}/`} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="font-black text-slate-800 text-base hover:text-pink-600 hover:underline transition-all flex items-center gap-1"
+                        className="font-black text-slate-800 text-xl hover:text-pink-600 hover:underline transition-all flex items-center gap-1"
                       >
                         @{contact.username}
-                        <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                       </a>
                       
-                      <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-2 mt-3">
                         <button 
                           onClick={() => handleUpdateCategory(contact.id, 'business')}
-                          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all ${
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all border ${
                             contact.category === 'business' 
-                              ? 'bg-indigo-600 text-white shadow-sm' 
-                              : 'bg-white text-slate-400 border border-slate-200 hover:border-indigo-200 hover:text-indigo-600'
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                              : 'bg-white text-slate-400 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
                           }`}
                         >
-                          <Briefcase size={10}/> Business
+                          <Briefcase size={12}/> Business
                         </button>
                         <button 
                           onClick={() => handleUpdateCategory(contact.id, 'friends')}
-                          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all ${
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all border ${
                             contact.category === 'friends' 
-                              ? 'bg-pink-600 text-white shadow-sm' 
-                              : 'bg-white text-slate-400 border border-slate-200 hover:border-pink-200 hover:text-pink-600'
+                              ? 'bg-pink-600 text-white border-pink-600 shadow-sm' 
+                              : 'bg-white text-slate-400 border border-slate-200 hover:border-pink-300 hover:text-pink-600'
                           }`}
                         >
-                          <Users size={10}/> Friends
+                          <Users size={12}/> Friends
                         </button>
                       </div>
-                      
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter mt-1">Linked Oct 2024</span>
                     </div>
                   </div>
                   
@@ -334,14 +333,14 @@ const AutomationCenter: React.FC = () => {
                       className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all active:scale-90 border border-transparent hover:border-red-100 flex items-center justify-center"
                       title="Remove Contact"
                     >
-                      <Trash2 size={20} />
+                      <Trash2 size={24} />
                     </button>
                   </div>
                 </div>
               )) : (
-                <div className="col-span-full flex flex-col items-center justify-center py-20 text-slate-400 space-y-4">
+                <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-4">
                   <SearchCheck size={48} className="opacity-20" />
-                  <p className="font-bold">No contacts matching the criteria</p>
+                  <p className="font-bold">No contacts matching your search</p>
                   <button onClick={() => setSearchTerm('')} className="text-pink-600 text-sm font-black uppercase">Clear Search</button>
                 </div>
               )}
@@ -372,7 +371,14 @@ const AutomationCenter: React.FC = () => {
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-2">
                       <img src={`https://picsum.photos/seed/${h.user}/30/30`} className="w-6 h-6 rounded-full border" alt={h.user} />
-                      <a href={`https://www.instagram.com/${h.user}/`} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-800 text-sm hover:text-pink-600">@{h.user}</a>
+                      <a 
+                        href={`https://www.instagram.com/${h.user}/`} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="font-bold text-slate-800 text-sm hover:text-pink-600 transition-colors"
+                      >
+                        @{h.user}
+                      </a>
                     </div>
                   </td>
                   <td className="px-8 py-6">
